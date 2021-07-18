@@ -1,8 +1,6 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
-import { sessionState } from "store/session";
-import { useSetRecoilState } from "recoil";
 import { Client, DEFAULT_SERVER_ERROR_MESSAGE, ApiError } from "api";
 
 export default function DeletePost({
@@ -12,9 +10,9 @@ export default function DeletePost({
   setPost,
   isLoading,
   setIsLoading,
+  getPosts,
   ...props
 }) {
-  const setSessionState = useSetRecoilState(sessionState);
   const cancelButtonRef = useRef(null);
 
   const deletePost = async () => {
@@ -23,27 +21,14 @@ export default function DeletePost({
       const { message } = await Client.deletePost(post.id);
       setPost(null);
       setOpen(false);
-      setSessionState((old) => {
-        return {
-          toast: {
-            heading: "Success!",
-            message,
-          },
-        };
-      });
+      alert(message);
+      getPosts();
     } catch (err) {
       let message = DEFAULT_SERVER_ERROR_MESSAGE;
       if (err instanceof ApiError) {
         message = err.message;
       }
-      setSessionState((old) => {
-        return {
-          toast: {
-            heading: "Error!",
-            message,
-          },
-        };
-      });
+      alert(message);
     } finally {
       setIsLoading(false);
     }

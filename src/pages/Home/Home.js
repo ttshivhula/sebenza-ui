@@ -18,29 +18,30 @@ export default function Home() {
   const setSessionState = useSetRecoilState(sessionState);
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    const getPosts = async () => {
-      setIsLoading(true);
-      try {
-        const { posts } = await Client.getPosts();
-        setPosts(posts);
-      } catch (err) {
-        let message = DEFAULT_SERVER_ERROR_MESSAGE;
-        if (err instanceof ApiError) {
-          message = err.message;
-        }
-        setSessionState((old) => {
-          return {
-            toast: {
-              heading: "Error!",
-              message,
-            },
-          };
-        });
-      } finally {
-        setIsLoading(false);
+  const getPosts = async () => {
+    setIsLoading(true);
+    try {
+      const { posts } = await Client.getPosts();
+      setPosts(posts);
+    } catch (err) {
+      let message = DEFAULT_SERVER_ERROR_MESSAGE;
+      if (err instanceof ApiError) {
+        message = err.message;
       }
-    };
+      setSessionState((old) => {
+        return {
+          toast: {
+            heading: "Error!",
+            message,
+          },
+        };
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     getPosts();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -60,10 +61,10 @@ export default function Home() {
             <p>Loading...</p>
           ) : (
             <>
-              <CreatePost />
+              <CreatePost getPosts={getPosts} />
               <div className="px-4 flex flex-wrap sm:px-0">
                 {posts.map((post) => (
-                  <Post post={post} key={post.id} />
+                  <Post post={post} key={post.id} getPosts={getPosts} />
                 ))}
               </div>
             </>

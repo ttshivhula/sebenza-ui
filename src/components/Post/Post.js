@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { userState } from "store/user";
 
-export default function Post({ post, ...props }) {
+export default function Post({ post, getPosts, ...props }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [currentPost, setPost] = useState(null);
@@ -91,6 +91,7 @@ export default function Post({ post, ...props }) {
             setPost={setPost}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
+            getPosts={getPosts}
           />
           <UpdatePost
             open={updateOpen}
@@ -99,6 +100,7 @@ export default function Post({ post, ...props }) {
             setPost={setPost}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
+            getPosts={getPosts}
           />
         </>
       )}

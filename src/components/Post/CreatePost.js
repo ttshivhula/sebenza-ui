@@ -4,8 +4,6 @@ import { Formik, Form, Field } from "formik";
 import { Client, DEFAULT_SERVER_ERROR_MESSAGE, ApiError } from "api";
 import { useDropzone } from "react-dropzone";
 import { useState, useCallback } from "react";
-import { sessionState } from "store/session";
-import { useSetRecoilState } from "recoil";
 
 const postSchema = Yup.object().shape({
   body: Yup.string()
@@ -13,10 +11,9 @@ const postSchema = Yup.object().shape({
     .min(5, "Body should be 5 chars minimum"),
 });
 
-export default function CreatePost() {
+export default function CreatePost({ getPosts }) {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const setSessionState = useSetRecoilState(sessionState);
 
   const onDrop = useCallback(async (acceptedFile) => {
     const image = acceptedFile[0];
@@ -39,28 +36,15 @@ export default function CreatePost() {
         body: values.body,
         image: image ? image.url : null,
       });
-      setSessionState((old) => {
-        return {
-          toast: {
-            heading: "Success!",
-            message,
-          },
-        };
-      });
+      alert(message);
+      getPosts();
       setIsLoading(false);
     } catch (err) {
       let message = DEFAULT_SERVER_ERROR_MESSAGE;
       if (err instanceof ApiError) {
         message = err.message;
       }
-      setSessionState((old) => {
-        return {
-          toast: {
-            heading: "Error!",
-            message,
-          },
-        };
-      });
+      alert(message);
       setIsLoading(false);
     }
   };

@@ -1,8 +1,6 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Formik, Form, Field } from "formik";
-import { sessionState } from "store/session";
-import { useSetRecoilState } from "recoil";
 import { Client, DEFAULT_SERVER_ERROR_MESSAGE, ApiError } from "api";
 import * as Yup from "yup";
 
@@ -19,9 +17,9 @@ export default function UpdatePost({
   setPost,
   isLoading,
   setIsLoading,
+  getPosts,
   ...props
 }) {
-  const setSessionState = useSetRecoilState(sessionState);
   const cancelButtonRef = useRef(null);
 
   const updatePost = async (values) => {
@@ -32,27 +30,14 @@ export default function UpdatePost({
       });
       setPost(null);
       setOpen(false);
-      setSessionState((old) => {
-        return {
-          toast: {
-            heading: "Success!",
-            message,
-          },
-        };
-      });
+      alert(message);
+      getPosts();
     } catch (err) {
       let message = DEFAULT_SERVER_ERROR_MESSAGE;
       if (err instanceof ApiError) {
         message = err.message;
       }
-      setSessionState((old) => {
-        return {
-          toast: {
-            heading: "Error!",
-            message,
-          },
-        };
-      });
+      alert(message);
     } finally {
       setIsLoading(false);
     }
