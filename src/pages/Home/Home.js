@@ -1,5 +1,3 @@
-import { sessionState } from "store/session";
-import { useSetRecoilState } from "recoil";
 import { useState, useEffect } from "react";
 import { Client, DEFAULT_SERVER_ERROR_MESSAGE, ApiError } from "api";
 import Header from "components/Header";
@@ -15,7 +13,6 @@ const navigation = [
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
-  const setSessionState = useSetRecoilState(sessionState);
   const [posts, setPosts] = useState([]);
 
   const getPosts = async () => {
@@ -28,14 +25,7 @@ export default function Home() {
       if (err instanceof ApiError) {
         message = err.message;
       }
-      setSessionState((old) => {
-        return {
-          toast: {
-            heading: "Error!",
-            message,
-          },
-        };
-      });
+      alert(message);
     } finally {
       setIsLoading(false);
     }
